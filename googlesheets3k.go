@@ -21,7 +21,7 @@ type GoogleSheets3k struct {
 	Subject string
 }
 
-func BuildAPI(client *http.Client, subject string, ctx context.Context) *GoogleSheets3k {
+func BuildNewGoogleSheets3k(client *http.Client, subject string, ctx context.Context) *GoogleSheets3k {
 	newDriveAPI := &GoogleSheets3k{}
 	service, err := sheets.NewService(ctx, option.WithHTTPClient(client))
 	if err != nil {
@@ -45,7 +45,7 @@ func BuildGoogleSheets3kOAuth2(subject string, scopes []string, clientSecret, au
 		panic(err)
 	}
 	client := config.Client(context.Background(), token)
-	return BuildAPI(client, subject, ctx)
+	return BuildNewGoogleSheets3k(client, subject, ctx)
 }
 
 func BuildGoogleSheets3kImpersonation(subject string, scopes []string, serviceAccountKey []byte, ctx context.Context) *GoogleSheets3k {
@@ -55,7 +55,7 @@ func BuildGoogleSheets3kImpersonation(subject string, scopes []string, serviceAc
 		panic(err)
 	}
 	jwt.Subject = subject
-	return BuildAPI(jwt.Client(ctx), subject, ctx)
+	return BuildNewGoogleSheets3k(jwt.Client(ctx), subject, ctx)
 }
 
 func (receiver *GoogleSheets3k) PrintToSheet(spreadsheetId, a1Notation, majorDimension string, values [][]interface{}, overwrite bool) interface{} {
