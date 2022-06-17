@@ -1,4 +1,4 @@
-package googlesheets4go
+package googlesheets3k
 
 import (
 	"context"
